@@ -78,13 +78,13 @@ jobs:
           path: github.env
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3.2.0
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3.7.1
+        uses: docker/setup-buildx-action@v3
 
       - name: Cache Docker layers
-        uses: actions/cache@v4.1.2
+        uses: actions/cache@v4
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ env.PLATFORM_PAIR }}-${{ github.sha }}
@@ -92,7 +92,7 @@ jobs:
             ${{ runner.os }}-buildx-${{ env.PLATFORM_PAIR }}-
 
       - name: Login to Docker Hub registry
-        uses: docker/login-action@v3.3.0
+        uses: docker/login-action@v3
         if: ${{ github.event_name != 'pull_request' }}
         with:
           username: ${{ secrets.DOCKERHUB_LOGIN }}
@@ -100,14 +100,14 @@ jobs:
 
       - name: Check if image tag exists
         id: check-image-tag
-        uses: tyriis/docker-image-tag-exists@v2.1.0
+        uses: tyriis/docker-image-tag-exists@v2
         with:
           registry: docker.io
           repository: ${{ env.IMAGE_TAG }}
           tag: ${{ env.VERSION }}-${{ env.PLATFORM_PAIR }}
 
       - name: Build image
-        uses: docker/build-push-action@v6.9.0
+        uses: docker/build-push-action@v6
         if: ${{ (github.event_name != 'schedule' && github.event_name != 'push') || steps.check-image-tag.outputs.tag == 'not found' }}
         with:
           context: '.'
@@ -151,14 +151,14 @@ jobs:
           cat github.env > $GITHUB_ENV
 
       - name: Login to Docker Hub registry
-        uses: docker/login-action@v3.2.0
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_LOGIN }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Check if image tag exists
         id: check-image-tag
-        uses: tyriis/docker-image-tag-exists@v2.1.0
+        uses: tyriis/docker-image-tag-exists@v2
         with:
           registry: docker.io
           repository: ${{ env.IMAGE_TAG }}
